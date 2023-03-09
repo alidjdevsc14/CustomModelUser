@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import Cart, Product, ProductInCart, Order, Deal
+from .models import Cart, Product, ProductInCart, Order, Deal, Customer, Seller
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 
@@ -11,11 +11,11 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ('email', 'is_staff', 'is_active',)
+    list_display = ('email', 'is_staff', 'is_active', 'is_customer', 'is_seller',)
     list_filter = ('email', 'is_staff', 'is_active',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_customer', 'is_seller')}),
     )
     add_fieldsets = (
         (None, {
@@ -107,4 +107,8 @@ class DealAdmin(admin.ModelAdmin):
 admin.site.register(Product)
 admin.site.register(ProductInCart)
 admin.site.register(Order)
-admin.site.register(Deal, DealAdmin)
+# admin.site.register(Deal, DealAdmin)
+admin.site.register(Deal)
+admin.site.register(Customer)
+admin.site.register(Seller)
+# admin.site.register(UserType)

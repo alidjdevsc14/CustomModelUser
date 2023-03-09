@@ -10,11 +10,36 @@ from django.utils.translation import gettext_lazy as _
 from .manager import CustomUserManager
 
 
+# class UserType(models.Model):
+#     CUSTOMER = 1
+#     SELLER = 2
+#     TYPE_CHOICES = (
+#         (SELLER, 'Seller'),
+#         (CUSTOMER, 'Customer')
+#     )
+#
+#     id = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, primary_key=True)
+
+# def __str__(self):
+#     return self.TYPE_CHOICES[]
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now=True)
+
+    is_customer = models.BooleanField(default=True)
+    is_seller = models.BooleanField(default=False)
+
+    # type(
+    #     (1, 'Seller')
+    #     (2, 'Customer')
+    # )
+    # user_type = models.IntegerField(choices=type, default=1)
+
+    # usertype = models.ManyToManyField(UserType)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -23,6 +48,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    address = models.CharField(max_length=1000)
+
+
+class Seller(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    gst = models.CharField(max_length=10)
+    warehouse_location = models.CharField(max_length=1000)
 
 
 class Product(models.Model):
