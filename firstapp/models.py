@@ -30,8 +30,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now=True)
 
-    is_customer = models.BooleanField(default=True)
-    is_seller = models.BooleanField(default=False)
+    # is_customer = models.BooleanField(default=True)
+    # is_seller = models.BooleanField(default=False)
 
     # type(
     #     (1, 'Seller')
@@ -41,6 +41,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     # usertype = models.ManyToManyField(UserType)
 
+    class Types(models.TextChoices):
+        SELLER = "Seller", "SELLER"
+        CUSTOMER = "Customer", "CUSTOMER"
+
+    default_type = Types.CUSTOMER
+
+    type = models.CharField(_('Type'), max_length=255, choices=Types.choices, default=default_type)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -49,16 +57,61 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.type = self.default_type
+        return super().save(*args, **kwargs)
 
-class Customer(models.Model):
+
+class CustomerAdditional(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     address = models.CharField(max_length=1000)
 
 
-class Seller(models.Model):
+class SellerAdditional(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     gst = models.CharField(max_length=10)
     warehouse_location = models.CharField(max_length=1000)
+
+
+class SellerManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).filter(type=CustomUser.Types.SELLER)
+
+
+class CustomerManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).filter(type=CustomUser.Types.CUSTOMER)
+
+
+class Seller(CustomUser):
+    default_type = CustomUser.Types.SELLER
+    objects = SellerManager()
+
+    class Meta:
+        proxy = True
+
+    def sell(self):
+        print('i can sell')
+
+    @property
+    def showAdditional(self):
+        return self.selleradditional
+
+
+class Customer(CustomUser):
+    default_type = CustomUser.Types.CUSTOMER
+    objects = CustomerManager()
+
+    class Meta:
+        proxy = True
+
+    def buy(self):
+        print('i can buy')
+
+    @property
+    def showAdditional(self):
+        return self.customeradditional
 
 
 class Product(models.Model):
