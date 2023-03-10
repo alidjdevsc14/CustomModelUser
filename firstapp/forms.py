@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from .models import CustomUser
+from django import forms
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -13,3 +14,10 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ('email',)
+
+
+class ContactUsForm(forms.Form):
+    email = forms.EmailField(required=True)
+    name = forms.CharField(max_length=100, required=True)
+    phone = forms.CharField(max_length=10, required=True)
+    query = forms.CharField(widget=forms.Textarea)
