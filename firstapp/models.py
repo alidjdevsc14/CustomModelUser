@@ -175,3 +175,10 @@ class Order(models.Model):
 class Deal(models.Model):
     user = models.ManyToManyField(CustomUser)
     deal_name = models.CharField(max_length=255)
+
+
+class Contact(models.Model):
+    email = models.EmailField()
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=10)
+    query = models.TextField()

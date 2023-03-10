@@ -40,6 +40,7 @@ def contactus2(request):
         # print(email)
         form = ContactUsForm(request.POST)
         if form.is_valid():
+            form.save()
             return HttpResponse("Thank You")
         else:
             return render(request, 'firstapp/contactus.html', {'form': form})
