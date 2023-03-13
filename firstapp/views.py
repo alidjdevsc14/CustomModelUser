@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from .forms import ContactUsForm
+from django.urls import reverse_lazy
 
 
 # Create your views here.
@@ -45,3 +46,26 @@ def contactus2(request):
         else:
             return render(request, 'firstapp/contactus.html', {'form': form})
     return render(request, 'firstapp/contactus2.html', {'form': ContactUsForm})
+
+
+class ContactUs(FormView):
+    form_class = ContactUsForm
+    template_name = 'firstapp/contactus2.html'
+    # success_url = '/'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        if len(form.cleaned_data.get('query')) > 10:
+            form.add_error('query', 'Query length is not valid')
+            return render(self.request, 'firstapp/contactus2.html', {'form': form})
+        form.save()
+        response = super().form_valid(form)
+        return response
+
+    def form_invalid(self, form):
+        if len(form.cleaned_data.get('query')) > 10:
+            form.add_error('query', 'Query length is not valid')
+            # form.errors['__all__'] = 'Query length is not right. It should be in 10 digits.')
+        response = super().form_valid(form)
+        return response
+
