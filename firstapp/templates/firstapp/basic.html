@@ -46,13 +46,38 @@
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+            <!--            <form class="d-flex">-->
+            <!--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
+            <!--                <button class="btn btn-outline-success" type="submit">Search</button>-->
+            <!--            </form>-->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle dropdownMenuButton" type="button"
+                        id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Account
+                </button>
+                <ul class="dropdown-menu dropdown-menu-left dropdown-menu-lg-right"
+                    aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'signup' %}">Sign Up</a></li>
+                    <li><a class="dropdown-item" href="{% url 'signupseller' %}">Signup For Seller</a></li>
+                    <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
+{% if messages %}
+{% for message in messages %}
+<div class="text-center alert alert-{{ message.tags }} alert-dismissible fade show" role="alert"
+     style="margin-bottom:0px;">
+    {{ message|safe }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
+{% endif %}
 
 {% block body %}
 {% endblock %}

@@ -1,13 +1,12 @@
-# from django.utils import timezone
-from datetime import timezone
-
 from django.db import models
 from django.contrib.auth.models import User, PermissionsMixin
-# Create your models here.
-
 from django.contrib.auth.models import AbstractBaseUser
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from .manager import CustomUserManager
+from django.core.validators import RegexValidator
+from multiselectfield import MultiSelectField
+from django.db.models import Q
 
 
 # class UserType(models.Model):
@@ -26,9 +25,10 @@ from .manager import CustomUserManager
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
-    is_active = models.BooleanField(default=False)
+    name = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(auto_now=True)
+    date_joined = models.DateTimeField(default=timezone.now)
 
     # is_customer = models.BooleanField(default=True)
     # is_seller = models.BooleanField(default=False)
@@ -38,7 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     #     (2, 'Customer')
     # )
     # user_type = models.IntegerField(choices=type, default=1)
-
+    #
     # usertype = models.ManyToManyField(UserType)
 
     class Types(models.TextChoices):
@@ -47,7 +47,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     default_type = Types.CUSTOMER
 
-    type = models.CharField(_('Type'), max_length=255, choices=Types.choices, default=default_type)
+    # type = models.CharField(_('Type'), max_length=255, choices=Types.choices, default=default_type)
+
+    type = MultiSelectField(choices=Types.choices, default=[], null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -59,7 +61,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.type = self.default_type
+            self.type.append(self.default_type)
         return super().save(*args, **kwargs)
 
 
@@ -76,12 +78,12 @@ class SellerAdditional(models.Model):
 
 class SellerManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=CustomUser.Types.SELLER)
+        return super().get_queryset(*args, **kwargs).filter(Q(type__contains=CustomUser.Types.SELLER))
 
 
 class CustomerManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=CustomUser.Types.CUSTOMER)
+        return super().get_queryset(*args, **kwargs).filter(Q(type__contains=CustomUser.Types.CUSTOMER))
 
 
 class Seller(CustomUser):
@@ -146,7 +148,7 @@ class CartManager(models.Manager):
 class Cart(models.Model):
     cart_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    created_on = models.DateTimeField(default=timezone)
+    created_on = models.DateTimeField(default=timezone.now)
 
     objects = CartManager()
 

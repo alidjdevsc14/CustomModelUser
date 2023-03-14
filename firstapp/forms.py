@@ -1,11 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import CustomUser, Contact
+from .models import CustomUser, Contact, Seller, SellerAdditional
 from django import forms
 
 
 class CustomUserCreationForm(UserCreationForm):
-    class Meta:
+    class Meta(UserCreationForm):
         model = CustomUser
         fields = ('email',)
 
@@ -27,5 +27,41 @@ class ContactUsForm(forms.ModelForm):
             'name',
             'email',
             'phone',
-            'query',
+            'query'
+        ]
+
+
+class RegistrationFormSeller(UserCreationForm):
+    gst = forms.CharField(max_length=10)
+    warehouse_location = forms.CharField(max_length=1000)
+
+    class Meta:
+        model = Seller
+        fields = [
+            'email',
+            'name',
+            'password1',
+            'password2',
+            'gst',
+            'warehouse_location'
+        ]
+
+
+class RegistrationFormSeller2(forms.ModelForm):
+    class Meta:
+        model = SellerAdditional
+        fields = [
+            'gst',
+            'warehouse_location'
+        ]
+
+
+class RegistrationForm(UserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = [
+            'email',
+            'name',
+            'password1',
+            'password2'
         ]

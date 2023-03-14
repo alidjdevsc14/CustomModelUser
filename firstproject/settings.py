@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from django.contrib.messages import constants as messages
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -118,3 +120,22 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'firstapp.CustomUser'
+
+LOGIN_URL = 'login'
+LOGIN_DIRECT_URL = 'index'
+LOGOUT_DIRECT_URL = 'index'
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'  # here we can override tags meaning in place of there actual color replace by another
+}
+# SMTP SETTINGS
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'muhammadalibutt143@gmail.com'
+EMAIL_HOST_PASSWORD = 'kdxbidvfbpagkrrh'
+DEFAULT_FROM_EMAIL = 'Testing <ali@gmail.com>'
+# DEFAULT_FROM_EMAIL ='Testing <ali@gmail.com>'
+
+# PASSWORD_RESET_TIMEOUT_DAYS = "7"

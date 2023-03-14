@@ -1,12 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import Cart, Product, ProductInCart, Order, Deal, Customer, Seller, Contact
+from .models import Cart, Product, ProductInCart, Order, Deal, Customer, Seller, Contact, SellerAdditional
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 
 
 # Register your models here.
+
+
+class SellerAdditionalInLine(admin.TabularInline):
+    model = SellerAdditional
+
+
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
@@ -14,17 +20,23 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'is_staff', 'is_active',)
     list_filter = ('email', 'is_staff', 'is_active',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active', 'is_customer', 'is_seller')}),
+        (None, {'fields': ('email', 'password', 'type')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')
+            'fields': ('email', 'type', 'password1', 'password2', 'is_staff', 'is_active')
         }),
     )
     search_fields = ('email',)
     ordering = ('email',)
+
+
+class SellerAdmin(admin.ModelAdmin):
+    inlines = (
+        SellerAdditionalInLine,
+    )
 
 
 # admin.site.unregister(User)
@@ -110,6 +122,6 @@ admin.site.register(Order)
 # admin.site.register(Deal, DealAdmin)
 admin.site.register(Deal)
 admin.site.register(Customer)
-admin.site.register(Seller)
+admin.site.register(Seller, SellerAdmin)
 admin.site.register(Contact)
-# admin.site.register(UserType)
+admin.site.register(SellerAdditional)
