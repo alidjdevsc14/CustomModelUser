@@ -39,6 +39,17 @@ class Index(TemplateView):
         return context
 
 
+def testsessions(request):
+    if request.session.get('test', False):
+        print(request.session["test"])
+    # request.session.set_expiry(1)
+    # if request.session['test']:
+    #     print(request.session['test'])
+    request.session['test'] = "testing"
+    request.session['test2'] = "testing2"
+    return render(request, "firstapp/sessiontesting.html")
+
+
 def contactus(request):
     if request.method == 'POST':
         name = request.POST.get('name')

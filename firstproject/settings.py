@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'firstapp',
 ]
 
+# SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+# SESSION_ENGINE = "django.contrib.sessions.backends.file"
+# SESSION_FILE_PATH = r"/home/ali/SyncClouds Programming/django/Project/prianshu/firstproject"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,6 +73,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'firstproject.wsgi.application'
+
+# ASGI_APPLICATION = 'firstproject.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

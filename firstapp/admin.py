@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import Cart, Product, ProductInCart, Order, Deal, Customer, Seller, Contact, SellerAdditional
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
+from django.contrib.sessions.models import Session
+import pprint
 
 
 # Register your models here.
@@ -115,6 +117,18 @@ class DealAdmin(admin.ModelAdmin):
     exclude = ('user',)
 
 
+class SessionAdmin(admin.ModelAdmin):
+    def _session_data(self, obj):
+        return pprint.pformat(obj.get_decoded()).replace('\n', '<br>\n')
+
+    _session_data.allow_tags = True
+    list_display = ['session_key', '_session_data', 'expire_date']
+    readonly_fields = ['_session_data']
+    exclude = ['session_data']
+
+
+admin.site.register(Session, SessionAdmin)
+
 # admin.site.register(Cart)
 admin.site.register(Product)
 admin.site.register(ProductInCart)
@@ -124,4 +138,5 @@ admin.site.register(Deal)
 admin.site.register(Customer)
 admin.site.register(Seller, SellerAdmin)
 admin.site.register(Contact)
+# admin.site.register(Session)
 admin.site.register(SellerAdditional)
