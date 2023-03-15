@@ -1,0 +1,42 @@
+{% extends 'firstapp/basic.html' %}
+{% load static %}
+{% load myfilters %}
+{% block title %}
+{% endblock %}
+{% block css %}
+<style>
+    .main-area {
+        padding-left: 20px;
+        padding-right: 20px;
+        background-color: white;
+
+    }
+    .product-cards{
+        background-color: white;
+        padding: 10px;
+
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="main-area">
+    <div class="product-cards">
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            {% for i in product %}
+            <div class="col">
+                <div class="card h-100">
+                    <img src="/media/{{i.image}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{% url 'productdetail' pk=i.pk %}">{{i.product_name}}</a>
+                        </h5>
+                        <p class="card-text">{{i.price}}</p>
+                    </div>
+                    <a class="btn btn-primary" href="{% url 'addtocart' id=i.product_id %}">Add To Cart</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

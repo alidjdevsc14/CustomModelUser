@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
-from .models import CustomUser, Contact, Seller, SellerAdditional
+from .models import CustomUser, Contact, Seller, SellerAdditional, ProductInCart
 from django import forms
 
 
@@ -64,4 +64,12 @@ class RegistrationForm(UserCreationForm):
             'name',
             'password1',
             'password2'
+        ]
+
+
+class CartForm(forms.ModelForm):
+    class Meta:
+        model = ProductInCart
+        fields = [
+            'quantity'
         ]

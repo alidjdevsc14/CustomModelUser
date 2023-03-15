@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from . import views
@@ -12,6 +14,13 @@ urlpatterns = [
     path('logout/', views.LogoutViewUser.as_view(), name='logout'),
     path('signupseller/', views.RegisterViewSeller.as_view(), name='signupseller'),
     path('testsessions/', views.testsessions, name="testsessions"),
+    path('listproducts/', views.ListProducts.as_view(), name="listproducts"),
+    path('productdetail/<int:pk>/', views.ProductDetail.as_view(), name="productdetail"),
+    path('addtocart/<int:id>/', views.addToCart, name="addtocart"),
+    path('displaycart/', views.DisplayCart.as_view(), name="displaycart"),
+    path('updatecart/<int:pk>/', views.UpdateCart.as_view(), name="updatecart"),
+    path('deletefromcart/<int:pk>/', views.DeleteFromCart.as_view(), name="deletefromcart"),
+    # path('listproducts/', views.listProducts, name="listproducts"),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
 
     # change password
@@ -43,3 +52,8 @@ urlpatterns = [
          name="password_reset_complete"),  # 4
 
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

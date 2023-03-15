@@ -119,6 +119,7 @@ class Customer(CustomUser):
 class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     product_name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="firstapp/productimages", default=None, null=True, blank=True)
     price = models.FloatField()
 
     @classmethod
